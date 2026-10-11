@@ -1,0 +1,11 @@
+{
+  "globalHeaders": {
+    "X-Robots-Tag": "noindex, nofollow, noarchive",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "X-Content-Type-Options": "nosniff"
+  },
+  "routes": [
+    { "route": "/tools/*", "statusCode": 404 },
+    { "route": "/gas/*", "statusCode": 404 }
+  ]
+}

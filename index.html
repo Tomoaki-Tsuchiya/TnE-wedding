@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <meta name="theme-color" content="#fbeef4">
+  <title>Wedding Invitation</title>
+  <meta name="description" content="Wedding Invitation">
+  <!-- LINE 等のリンクプレビュー用。og:image は PNG/JPG（1200x630 推奨）を用意して差し替える -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Wedding Invitation">
+  <meta property="og:description" content="結婚式のご案内 / You're invited">
+  <!-- <meta property="og:image" content="https://your-domain.example/assets/img/ogp.jpg"> -->
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Shippori+Mincho:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 共通アイコン -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="sakura" viewBox="-20 -20 40 40">
+      <g>
+        <path id="petal" d="M0 -1C-7 -6-7-14-2.6-18.5L0-15.8 2.6-18.5C7-14 7-6 0-1Z"/>
+        <use href="#petal" transform="rotate(72)"/>
+        <use href="#petal" transform="rotate(144)"/>
+        <use href="#petal" transform="rotate(216)"/>
+        <use href="#petal" transform="rotate(288)"/>
+      </g>
+      <circle r="2.4" fill="#fff" opacity=".85"/>
+    </symbol>
+  </svg>
+
+  <canvas id="petals" aria-hidden="true"></canvas>
+
+  <button type="button" class="lang-toggle" id="langToggle" aria-label="Switch language">
+    <span data-lang="ja">JA</span><span class="sep">/</span><span data-lang="en">EN</span>
+  </button>
+
+  <!-- ===== 合言葉 ===== -->
+  <section id="gate" class="screen gate">
+    <div class="gate-card">
+      <svg class="gate-flower"><use href="#sakura"/></svg>
+      <p class="eyebrow">Wedding Invitation</p>
+      <p class="gate-initials" data-bind="initials"></p>
+      <p class="gate-lead" data-i18n="gate.lead"></p>
+      <form id="gateForm" class="gate-form" autocomplete="off">
+        <input id="gateInput" type="password" inputmode="text" autocapitalize="off" spellcheck="false"
+               data-i18n-placeholder="gate.placeholder" aria-describedby="gateError" required>
+        <button type="submit" class="btn btn-primary" data-i18n="gate.button"></button>
+      </form>
+      <p id="gateError" class="gate-error" role="alert" aria-live="polite"></p>
+      <p class="gate-hint" data-i18n="gate.hint"></p>
+    </div>
+  </section>
+
+  <!-- ===== 封筒 ===== -->
+  <section id="envelopeScreen" class="screen envelope-screen" hidden>
+    <div class="envelope" id="envelope" role="button" tabindex="0" data-i18n-aria="envelope.hint">
+      <div class="env-back"></div>
+      <div class="env-letter">
+        <p class="eyebrow">Wedding Invitation</p>
+        <p class="letter-names" data-bind="namesShort"></p>
+        <p class="letter-date" data-bind="dateDots"></p>
+      </div>
+      <div class="env-front"></div>
+      <div class="env-flap"></div>
+      <div class="env-seal"><span data-bind="initialsCompact"></span></div>
+    </div>
+    <p class="tap-hint" data-i18n="envelope.hint"></p>
+  </section>
+
+  <!-- ===== 本文 ===== -->
+  <main id="main" hidden>
+    <!-- Hero -->
+    <header class="hero">
+      <p class="eyebrow reveal">Wedding Invitation</p>
+      <div class="hero-frame reveal">
+        <img id="heroImg" alt="" decoding="async">
+      </div>
+      <h1 class="hero-names reveal">
+        <span data-bind="groomShort"></span>
+        <span class="amp">&amp;</span>
+        <span data-bind="brideShort"></span>
+      </h1>
+      <p class="hero-names-local reveal" data-bind="namesLocal"></p>
+      <p class="hero-date reveal" data-bind="dateLong"></p>
+      <div class="scroll-cue" aria-hidden="true"><span></span></div>
+    </header>
+
+    <!-- ご挨拶 -->
+    <section class="section message">
+      <h2 class="section-title reveal"><span class="en">Message</span><span class="sub" data-i18n="message.sub"></span></h2>
+      <div class="divider reveal"><svg><use href="#sakura"/></svg></div>
+      <p class="message-body reveal" data-i18n="message.body"></p>
+      <p class="message-sign reveal" data-bind="namesSign"></p>
+    </section>
+
+    <!-- カウントダウン -->
+    <section class="section countdown band">
+      <h2 class="section-title reveal"><span class="en">Countdown</span><span class="sub" data-i18n="countdown.sub"></span></h2>
+      <div class="countdown-grid reveal" id="countdown">
+        <div><b data-cd="d">--</b><span data-i18n="countdown.days"></span></div>
+        <div><b data-cd="h">--</b><span data-i18n="countdown.hours"></span></div>
+        <div><b data-cd="m">--</b><span data-i18n="countdown.minutes"></span></div>
+        <div><b data-cd="s">--</b><span data-i18n="countdown.seconds"></span></div>
+      </div>
+      <p class="countdown-done" id="countdownDone" data-i18n="countdown.done" hidden></p>
+    </section>
+
+    <!-- ギャラリー -->
+    <section class="section gallery">
+      <h2 class="section-title reveal"><span class="en">Gallery</span><span class="sub" data-i18n="gallery.sub"></span></h2>
+      <div class="gallery-track reveal" id="gallery"></div>
+      <p class="gallery-hint" data-i18n="gallery.hint"></p>
+    </section>
+
+    <!-- ムービー -->
+    <section class="section movie">
+      <h2 class="section-title reveal"><span class="en">Movie</span><span class="sub" data-i18n="movie.sub"></span></h2>
+      <div class="movie-frame reveal" id="movie"></div>
+    </section>
+
+    <!-- ご案内 -->
+    <section class="section info band">
+      <h2 class="section-title reveal"><span class="en">Information</span><span class="sub" data-i18n="info.sub"></span></h2>
+      <div class="info-card reveal">
+        <dl class="info-list">
+          <div><dt data-i18n="info.date"></dt><dd data-bind="dateLong"></dd></div>
+          <div class="schedule" id="schedule"></div>
+          <div><dt data-i18n="info.venue"></dt><dd><span data-bind="venueName"></span><small data-bind="venueAddress"></small></dd></div>
+          <div><dt data-i18n="info.access"></dt><dd data-bind="venueAccess"></dd></div>
+          <div><dt data-i18n="info.dress"></dt><dd data-bind="dressCode"></dd></div>
+        </dl>
+        <div class="map-wrap">
+          <iframe id="mapFrame" title="Map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <a id="mapLink" class="btn btn-ghost" target="_blank" rel="noopener" data-i18n="info.openMap"></a>
+        <p class="info-notes" data-bind="notes"></p>
+      </div>
+    </section>
+
+    <!-- 出欠 -->
+    <section class="section rsvp" id="rsvp">
+      <h2 class="section-title reveal"><span class="en">RSVP</span><span class="sub" data-i18n="rsvp.sub"></span></h2>
+      <p class="rsvp-lead reveal" data-i18n="rsvp.lead"></p>
+
+      <form id="rsvpForm" class="rsvp-form reveal" novalidate>
+        <fieldset class="attend">
+          <legend class="visually-hidden" data-i18n="rsvp.attendance"></legend>
+          <label class="attend-opt">
+            <input type="radio" name="attendance" value="attend" required>
+            <span><em>Joyfully Accept</em><b data-i18n="rsvp.attend"></b></span>
+          </label>
+          <label class="attend-opt">
+            <input type="radio" name="attendance" value="decline">
+            <span><em>Regretfully Decline</em><b data-i18n="rsvp.decline"></b></span>
+          </label>
+        </fieldset>
+
+        <div class="field">
+          <span class="label" data-i18n="rsvp.side"></span>
+          <div class="chips">
+            <label><input type="radio" name="side" value="groom" required><span data-i18n="rsvp.sideGroom"></span></label>
+            <label><input type="radio" name="side" value="bride"><span data-i18n="rsvp.sideBride"></span></label>
+          </div>
+        </div>
+
+        <label class="field">
+          <span class="label"><span data-i18n="rsvp.name"></span><i class="req" data-i18n="rsvp.required"></i></span>
+          <input type="text" name="name" autocomplete="name" required maxlength="80">
+        </label>
+
+        <label class="field" data-only="ja">
+          <span class="label" data-i18n="rsvp.kana"></span>
+          <input type="text" name="kana" maxlength="80">
+        </label>
+
+        <label class="field">
+          <span class="label"><span data-i18n="rsvp.email"></span><i class="req" data-i18n="rsvp.required"></i></span>
+          <input type="email" name="email" autocomplete="email" inputmode="email" required maxlength="120">
+        </label>
+
+        <div class="attend-only">
+          <label class="field">
+            <span class="label" data-i18n="rsvp.companions"></span>
+            <select name="companions">
+              <option value="0">0</option><option value="1">1</option>
+              <option value="2">2</option><option value="3">3</option>
+            </select>
+          </label>
+
+          <label class="field companion-names" hidden>
+            <span class="label" data-i18n="rsvp.companionNames"></span>
+            <textarea name="companionNames" rows="2" maxlength="300"></textarea>
+          </label>
+
+          <label class="field">
+            <span class="label" data-i18n="rsvp.allergies"></span>
+            <textarea name="allergies" rows="2" maxlength="300" data-i18n-placeholder="rsvp.allergiesPh"></textarea>
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="label" data-i18n="rsvp.message"></span>
+          <textarea name="message" rows="3" maxlength="1000"></textarea>
+        </label>
+
+        <!-- スパム対策（人には見えない） -->
+        <label class="hp" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+
+        <p class="form-error" id="rsvpError" role="alert" aria-live="polite"></p>
+        <button type="submit" class="btn btn-primary btn-block" id="rsvpSubmit" data-i18n="rsvp.submit"></button>
+      </form>
+
+      <div class="rsvp-result" id="rsvpDone" hidden>
+        <svg class="gate-flower"><use href="#sakura"/></svg>
+        <p data-i18n="rsvp.success"></p>
+      </div>
+      <div class="rsvp-result" id="rsvpClosed" hidden>
+        <p data-i18n="rsvp.closed"></p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="divider"><svg><use href="#sakura"/></svg></div>
+      <p class="footer-thanks">Thank you</p>
+      <p class="footer-names" data-bind="namesShort"></p>
+    </footer>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/sha256.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

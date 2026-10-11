@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>合言葉ハッシュ作成</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 520px; margin: 40px auto; padding: 0 16px; color: #5b4d6b; background: #fffafc; }
+    input, button { font-size: 16px; padding: 10px 12px; border-radius: 8px; border: 1px solid #d9cce8; }
+    input { width: 100%; box-sizing: border-box; }
+    button { margin-top: 10px; background: #9d84cf; color: #fff; border: 0; cursor: pointer; }
+    code { display: block; margin-top: 16px; padding: 12px; background: #f3edfa; border-radius: 8px; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h1>合言葉ハッシュ作成</h1>
+  <p>新しい合言葉を入力すると、<b>js/config.js</b> の <code style="display:inline;padding:2px 6px">passphraseHash</code> と
+     <b>gas/Code.gs</b> の <code style="display:inline;padding:2px 6px">PASSPHRASE_HASH</code> に貼り付ける値を作成します。</p>
+  <p><small>このツールはサイトと一緒に公開しないでください。</small></p>
+  <input id="p" placeholder="新しい合言葉">
+  <button id="b">作成</button>
+  <code id="out">—</code>
+  <script src="../js/sha256.js"></script>
+  <script>
+    document.getElementById("b").onclick = function () {
+      sha256Hex(normalizePassphrase(document.getElementById("p").value)).then(function (h) {
+        document.getElementById("out").textContent = h;
+      });
+    };
+  </script>
+</body>
+</html>
