@@ -55,6 +55,9 @@ window.WEDDING = {
     poster: ""       // mp4 の表紙画像（任意）
   },
 
+  // 画面左下にテーマ切替を出す（ドラフト確認用。本番では false）
+  themePicker: true,
+
   // 出欠フォームの送信先（Google Apps Script のウェブアプリURL）。
   // 空のままだと「デモモード」（送信せずに完了画面だけ出す）。
   rsvpEndpoint: ""

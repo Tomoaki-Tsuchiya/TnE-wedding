@@ -9,7 +9,9 @@
 | パス | 内容 |
 |---|---|
 | `index.html` | ページ本体 |
-| `css/style.css` | デザイン（色は冒頭の `:root` で一括変更できる） |
+| `css/style.css` | 全テーマ共通のレイアウト。これ単体が Pastel テーマの見た目 |
+| `themes/*.css` | テーマごとの上書きスタイル（例：`themes/chic.css`） |
+| `js/theme.js` | テーマの一覧と既定テーマ |
 | `js/config.js` | **名前・日時・会場・写真・動画・合言葉など、中身は全部ここ** |
 | `js/i18n.js` | 画面の固定文言（日本語 / 英語） |
 | `js/main.js` | 動き（合言葉、封筒、言語切替、フォーム送信など） |
@@ -29,6 +31,32 @@ npx http-server -p 8080 -c-1
 
 http://localhost:8080 を開く。合言葉は `js/config.js` の `passphraseHash` に設定したもの。
 スマホ実機で見るときは、同じWi-Fiにつないで `http://<PCのIPアドレス>:8080` を開く。
+
+## テーマ（見た目）を切り替える・試す
+
+中身（`js/config.js`）は全テーマで共通。見た目だけを差し替える。
+
+| テーマ | URL | 内容 |
+|---|---|---|
+| `chic`（既定） | `?theme=chic` | チャコール × アイボリー × シャンパンゴールド |
+| `pastel` | `?theme=pastel` | 和洋モダン × パステル（初版の見た目） |
+
+- URL の末尾に `?theme=pastel` を付けると、そのテーマで表示される。選んだテーマはそのブラウザに記憶される
+- `config.js` の `themePicker: true` の間は、画面左下にテーマ切替が出る（ドラフト確認用。本番では `false`）
+- 既定のテーマは `js/theme.js` の `DEFAULT_THEME` で変える
+
+### 新しいテーマを試す手順
+
+1. 作業用ブランチを切る：`git switch -c feature/theme-<名前>`
+2. `themes/chic.css` をコピーして `themes/<名前>.css` を作り、先頭の `:root[data-theme="chic"]` と各行の `[data-theme="chic"]` を新しい名前に置換して編集
+3. `js/theme.js` の `THEMES` に1行足す
+4. 確認できたら `main` にマージして push（全テーマが同じURLで見比べられる）
+
+### 元に戻す
+
+- 見た目だけ戻す：`?theme=pastel` を使う、または `DEFAULT_THEME` を `"pastel"` にする
+- テーマの仕組みを入れる前のコードに完全に戻す：初版にはタグ `v0.1-pastel` が付いている
+  （中身の確認は `git switch --detach v0.1-pastel`、元に戻るときは `git switch main`）
 
 ## 中身を差し替える
 

@@ -292,10 +292,11 @@
 
   // ---------- 花びら ----------
   (function petals() {
-    if (reduceMotion) return;
+    var opts = (window.ACTIVE_THEME || {}).petals;
+    if (reduceMotion || !opts) return;
     var canvas = $("#petals");
     var ctx = canvas.getContext("2d");
-    var colors = ["#f7c6d6", "#f3b3c8", "#e2d0f5", "#d9c3f0", "#fde3ec"];
+    var colors = opts.colors;
     var list = [], w, h, dpr;
 
     function resize() {
@@ -351,6 +352,22 @@
     for (var i = 0; i < count; i++) list.push(make(true));
     loop();
   })();
+
+  // ---------- テーマ切替（ドラフト確認用） ----------
+  if (C.themePicker && window.THEMES) {
+    var picker = document.createElement("label");
+    picker.className = "theme-picker";
+    picker.innerHTML = "<span>Theme</span><select aria-label=\"Theme\">" +
+      Object.keys(THEMES).map(function (k) {
+        return "<option value=\"" + k + "\"" + (k === ACTIVE_THEME.name ? " selected" : "") + ">" + THEMES[k].label + "</option>";
+      }).join("") + "</select>";
+    picker.querySelector("select").addEventListener("change", function (e) {
+      var url = new URL(location.href);
+      url.searchParams.set("theme", e.target.value);
+      location.href = url.toString();
+    });
+    document.body.appendChild(picker);
+  }
 
   // ---------- 起動 ----------
   applyLang();
